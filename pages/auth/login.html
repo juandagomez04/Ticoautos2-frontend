@@ -8,6 +8,10 @@
 
     <link rel="stylesheet" href="../../css/base/global.css">
     <link rel="stylesheet" href="../../css/auth/auth.css">
+    <link rel="stylesheet" href="../../css/auth/google.css">
+
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
 <body>
@@ -77,6 +81,14 @@
 
                     <div class="form-message hidden" id="formMessage"></div>
                 </form>
+
+                <!-- Separador -->
+                <div class="auth-divider">
+                    <span>o</span>
+                </div>
+
+                <!-- Botón de Google -->
+                <div id="googleSignInBtn" style="display: flex; justify-content: center;"></div>
 
                 <div class="auth-footer">
                     <p>
