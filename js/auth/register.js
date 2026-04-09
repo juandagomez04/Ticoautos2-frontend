@@ -3,6 +3,7 @@ import { API } from "../core/config.js";
 document.addEventListener("DOMContentLoaded", () => {
     const registerForm = document.getElementById("registerForm");
 
+    const cedulaInput = document.getElementById("cedula");
     const nameInput = document.getElementById("name");
     const lastNameInput = document.getElementById("lastName");
     const emailInput = document.getElementById("email");
@@ -14,11 +15,60 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const formMessage = document.getElementById("formMessage");
 
+    const cedulaError = document.getElementById("cedulaError");
+    const cedulaStatus = document.getElementById("cedulaStatus");
     const nameError = document.getElementById("nameError");
     const lastNameError = document.getElementById("lastNameError");
     const emailError = document.getElementById("emailError");
     const passwordError = document.getElementById("passwordError");
     const confirmPasswordError = document.getElementById("confirmPasswordError");
+
+    let cedulaValida = false;
+
+    // ─── Consulta al padrón por cédula ────────────────────────────────────────
+
+    cedulaInput.addEventListener("blur", async () => {
+        const cedula = cedulaInput.value.trim();
+        cedulaError.textContent = "";
+        cedulaStatus.textContent = "";
+        cedulaValida = false;
+        nameInput.value = "";
+        lastNameInput.value = "";
+
+        if (!cedula) return;
+
+        cedulaStatus.textContent = "Consultando padrón...";
+        cedulaStatus.style.color = "";
+
+        try {
+            const res = await fetch(`${API}/auth/cedula/${cedula}`);
+            const data = await res.json();
+
+            if (!res.ok) {
+                cedulaError.textContent = data.message || "Cédula no encontrada.";
+                cedulaStatus.textContent = "";
+                return;
+            }
+
+            if (!data.esMayorDeEdad) {
+                cedulaError.textContent = "Debes ser mayor de 18 años para registrarte.";
+                cedulaStatus.textContent = "";
+                return;
+            }
+
+            nameInput.value = data.nombre || "";
+            lastNameInput.value = `${data.apellido1} ${data.apellido2}`.trim();
+
+            cedulaStatus.textContent = "✓ Cédula válida";
+            cedulaStatus.style.color = "green";
+            cedulaValida = true;
+        } catch (e) {
+            cedulaError.textContent = "Error al consultar el padrón.";
+            cedulaStatus.textContent = "";
+        }
+    });
+
+    // ─── Utilidades ────────────────────────────────────────────────────────────
 
     function showMessage(message, type) {
         formMessage.textContent = message;
@@ -33,6 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function clearErrors() {
+        cedulaError.textContent = "";
         nameError.textContent = "";
         lastNameError.textContent = "";
         emailError.textContent = "";
@@ -48,21 +99,17 @@ document.addEventListener("DOMContentLoaded", () => {
     function validateForm() {
         clearErrors();
 
-        const name = nameInput.value.trim();
-        const lastName = lastNameInput.value.trim();
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
         const confirmPassword = confirmPasswordInput.value.trim();
 
         let isValid = true;
 
-        if (!name) {
-            nameError.textContent = "El nombre es obligatorio.";
+        if (!cedulaInput.value.trim()) {
+            cedulaError.textContent = "La cédula es obligatoria.";
             isValid = false;
-        }
-
-        if (!lastName) {
-            lastNameError.textContent = "El apellido es obligatorio.";
+        } else if (!cedulaValida) {
+            cedulaError.textContent = "Debes validar tu cédula antes de registrarte.";
             isValid = false;
         }
 
@@ -116,7 +163,8 @@ document.addEventListener("DOMContentLoaded", () => {
             name: nameInput.value.trim(),
             lastName: lastNameInput.value.trim(),
             email: emailInput.value.trim(),
-            password: passwordInput.value.trim()
+            password: passwordInput.value.trim(),
+            cedula: cedulaInput.value.trim(),
         };
 
         try {

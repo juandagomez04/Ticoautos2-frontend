@@ -50,14 +50,21 @@
 
                 <form id="registerForm" class="auth-form" novalidate>
                     <div class="input-group">
+                        <label for="cedula">Cédula</label>
+                        <input type="text" id="cedula" placeholder="0-0000-0000" maxlength="12">
+                        <small class="field-error" id="cedulaError"></small>
+                        <small id="cedulaStatus"></small>
+                    </div>
+
+                    <div class="input-group">
                         <label for="name">Nombre</label>
-                        <input type="text" id="name" placeholder="Juan">
+                        <input type="text" id="name" placeholder="Juan" readonly>
                         <small class="field-error" id="nameError"></small>
                     </div>
 
                     <div class="input-group">
                         <label for="lastName">Apellido</label>
-                        <input type="text" id="lastName" placeholder="Gómez">
+                        <input type="text" id="lastName" placeholder="Gómez" readonly>
                         <small class="field-error" id="lastNameError"></small>
                     </div>
 
