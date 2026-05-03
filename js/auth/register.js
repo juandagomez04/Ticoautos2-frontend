@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const nameInput = document.getElementById("name");
     const lastNameInput = document.getElementById("lastName");
     const emailInput = document.getElementById("email");
+    const phoneInput = document.getElementById("phone");
     const passwordInput = document.getElementById("password");
     const confirmPasswordInput = document.getElementById("confirmPassword");
 
@@ -20,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const nameError = document.getElementById("nameError");
     const lastNameError = document.getElementById("lastNameError");
     const emailError = document.getElementById("emailError");
+    const phoneError = document.getElementById("phoneError");
     const passwordError = document.getElementById("passwordError");
     const confirmPasswordError = document.getElementById("confirmPasswordError");
 
@@ -87,6 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
         nameError.textContent = "";
         lastNameError.textContent = "";
         emailError.textContent = "";
+        phoneError.textContent = "";
         passwordError.textContent = "";
         confirmPasswordError.textContent = "";
         clearMessage();
@@ -118,6 +121,15 @@ document.addEventListener("DOMContentLoaded", () => {
             isValid = false;
         } else if (!validateEmail(email)) {
             emailError.textContent = "Ingresa un correo válido.";
+            isValid = false;
+        }
+
+        const phone = phoneInput.value.trim();
+        if (!phone) {
+            phoneError.textContent = "El teléfono es obligatorio.";
+            isValid = false;
+        } else if (!/^\+\d{7,15}$/.test(phone)) {
+            phoneError.textContent = "Formato inválido. Ej: +50688887777";
             isValid = false;
         }
 
@@ -163,6 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
             name: nameInput.value.trim(),
             lastName: lastNameInput.value.trim(),
             email: emailInput.value.trim(),
+            phone: phoneInput.value.trim(),
             password: passwordInput.value.trim(),
             cedula: cedulaInput.value.trim(),
         };
@@ -185,11 +198,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            showMessage("Cuenta creada correctamente. Ahora puedes iniciar sesión.", "success");
+            showMessage(
+                "✓ Cuenta creada. Te enviamos un correo de verificación — revisá tu bandeja de entrada y hacé clic en el enlace para activar tu cuenta.",
+                "success"
+            );
 
-            setTimeout(() => {
-                window.location.href = "./login.html";
-            }, 1200);
+            // Deshabilitar el formulario para evitar re-envíos
+            registerForm.querySelectorAll("input, button").forEach(el => el.disabled = true);
         } catch (error) {
             console.error("Error en registro:", error);
             showMessage("Error de conexión con el servidor.", "error");
