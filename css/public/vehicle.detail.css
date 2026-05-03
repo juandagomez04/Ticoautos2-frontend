@@ -34,13 +34,23 @@
     background:
         radial-gradient(circle at top right, rgba(34, 197, 94, 0.22), transparent 25%),
         linear-gradient(135deg, #475569, #1e293b);
+    background-size: cover;
+    background-position: center;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--text-soft);
     font-weight: 700;
     margin-bottom: 16px;
-    transition: 0.25s ease;
+    transition: 0.3s ease;
+    overflow: hidden;
+}
+
+.gallery-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .gallery-main.image-1 {
