@@ -88,7 +88,7 @@
                 </div>
 
                 <!-- Botón de Google -->
-                <div id="googleSignInBtn" style="display: flex; justify-content: center;"></div>
+                <div id="googleSignInBtn" class="google-signin-btn"></div>
 
                 <div class="auth-footer">
                     <p>
@@ -99,6 +99,55 @@
             </div>
         </section>
     </main>
+
+    <!-- Modal: código 2FA por SMS -->
+    <div id="twoFactorModal" class="cedula-modal hidden">
+        <div class="cedula-modal-box card">
+            <h2>Verificación en dos pasos</h2>
+            <p>Enviamos un código de 6 dígitos al número de teléfono asociado a tu cuenta. Ingresalo a continuación.</p>
+
+            <div class="input-group">
+                <label for="twoFactorCode">Código de verificación</label>
+                <input type="text" id="twoFactorCode" placeholder="000000" maxlength="6" autocomplete="one-time-code" inputmode="numeric">
+                <small class="field-error" id="twoFactorError"></small>
+            </div>
+
+            <div class="form-message hidden" id="twoFactorMessage"></div>
+
+            <button id="twoFactorSubmitBtn" class="btn btn-primary" style="width:100%">
+                Verificar código
+            </button>
+
+            <p style="margin-top:0.75rem; font-size:0.85rem; text-align:center; color:var(--color-muted)">
+                El código expira en 5 minutos.
+            </p>
+        </div>
+    </div>
+
+    <!-- Modal: cédula requerida para usuarios nuevos con Google -->
+    <div id="cedulaModal" class="cedula-modal hidden">
+        <div class="cedula-modal-box card">
+            <h2>Un paso más</h2>
+            <p>Para completar tu registro con Google necesitamos tu número de cédula costarricense.</p>
+
+            <div class="input-group">
+                <label for="googleCedula">Número de cédula</label>
+                <input type="text" id="googleCedula" placeholder="Ej: 123456789" maxlength="12">
+                <small class="field-error" id="googleCedulaError"></small>
+                <small id="googleCedulaStatus"></small>
+            </div>
+
+            <div id="googleUserPreview" class="cedula-preview hidden">
+                <span id="googleUserName"></span>
+            </div>
+
+            <div class="form-message hidden" id="cedulaModalMessage"></div>
+
+            <button id="cedulaSubmitBtn" class="btn btn-primary" style="width:100%" disabled>
+                Completar registro
+            </button>
+        </div>
+    </div>
 
     <script type="module" src="../../js/auth/login.js"></script>
 </body>
