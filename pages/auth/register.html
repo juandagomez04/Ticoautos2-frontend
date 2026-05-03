@@ -75,6 +75,13 @@
                     </div>
 
                     <div class="input-group">
+                        <label for="phone">Teléfono (formato internacional)</label>
+                        <input type="tel" id="phone" placeholder="+50688887777" maxlength="16">
+                        <small class="field-hint">Incluí el código de país, ej: +506 para Costa Rica</small>
+                        <small class="field-error" id="phoneError"></small>
+                    </div>
+
+                    <div class="input-group">
                         <label for="password">Contraseña</label>
                         <div class="password-box">
                             <input type="password" id="password" placeholder="********">
