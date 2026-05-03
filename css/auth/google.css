@@ -13,5 +13,5 @@
     content: "";
     flex: 1;
     height: 1px;
-    background-color: var(--color-border, #ddd);
+    background-color: var(--border);
 }
