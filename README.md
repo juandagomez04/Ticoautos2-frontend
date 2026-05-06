@@ -7,7 +7,7 @@ Desarrollado como proyecto académico para la carrera de Ingeniería del Softwar
 
 ## 📌 Descripción
 
-Este repositorio contiene el frontend de TicoAutos, desarrollado con HTML, CSS y JavaScript puro (ES Modules), sin frameworks. Se conecta al backend mediante fetch a la API REST, utilizando JWT para autenticación y localStorage para persistencia de sesión.
+Este repositorio contiene el frontend de TicoAutos, desarrollado con HTML, CSS y JavaScript puro (ES Modules), sin frameworks. Se conecta al backend mediante fetch a la API REST, utilizando JWT para autenticación y localStorage para persistencia de sesión. Soporta inicio de sesión con Google OAuth además del login tradicional.
 
 ---
 
@@ -17,6 +17,7 @@ Este repositorio contiene el frontend de TicoAutos, desarrollado con HTML, CSS y
 - JavaScript (ES Modules)
 - Live Server (VS Code)
 - localStorage para manejo del token JWT
+- Google OAuth 2.0 (GSI — Google Sign-In)
 
 ---
 
@@ -30,35 +31,35 @@ ticoautos-frontend/
  │   │   └── register.html
  │   ├── dashboard/
  │   │   ├── dashboard.html
- │   │   ├── vehicle.my.html       mis vehículos
- │   │   ├── vehicle.create.html   publicar vehículo
- │   │   ├── vehicle.edit.html     editar vehículo
- │   │   ├── inbox.list.html       lista de conversaciones
+ │   │   ├── vehicle.my.html          mis vehículos
+ │   │   ├── vehicle.create.html      publicar vehículo
+ │   │   ├── vehicle.edit.html        editar vehículo
+ │   │   ├── inbox.list.html          lista de conversaciones
  │   │   └── inbox.conversation.html  detalle de conversación
  │   └── public/
- │       ├── home.html             página principal con búsqueda
- │       └── vehicle.detail.html   detalle de vehículo
+ │       ├── home.html                página principal con búsqueda
+ │       └── vehicle.detail.html      detalle de vehículo
  ├── js/
  │   ├── app/
- │   │   ├── home.js               carga vehículos con filtros y paginación
- │   │   └── vehicle.detail.js     detalle + reserva + mensajes
+ │   │   ├── home.js                  carga vehículos con filtros y paginación
+ │   │   └── vehicle.detail.js        detalle + reserva + mensajes
  │   ├── auth/
  │   │   ├── login.js
  │   │   ├── register.js
  │   │   └── logout.js
  │   ├── core/
- │   │   ├── config.js             URL base de la API
- │   │   ├── http.js               wrapper de fetch con JWT
- │   │   └── storage.js            manejo del token en localStorage
+ │   │   ├── config.js                URL base de la API y configuración OAuth
+ │   │   ├── http.js                  wrapper de fetch con JWT
+ │   │   └── storage.js               manejo del token en localStorage
  │   ├── dashboard/
  │   │   ├── dashboard.js
- │   │   ├── vehicle.my.js         listado de mis vehículos
- │   │   ├── vehicle.create.js     formulario de creación
- │   │   ├── vehicle.edit.js       formulario de edición
- │   │   ├── inbox.list.js         lista de conversaciones
- │   │   └── inbox.conversation.js historial de mensajes
+ │   │   ├── vehicle.my.js            listado de mis vehículos
+ │   │   ├── vehicle.create.js        formulario de creación
+ │   │   ├── vehicle.edit.js          formulario de edición
+ │   │   ├── inbox.list.js            lista de conversaciones
+ │   │   └── inbox.conversation.js    historial de mensajes
  │   └── guards/
- │       └── requireAuth.js        protege páginas privadas
+ │       └── requireAuth.js           protege páginas privadas
  ├── css/
  │   ├── base/       reset.css · global.css · main.css
  │   ├── auth/       auth.css
@@ -73,8 +74,9 @@ ticoautos-frontend/
 ## 🚀 Ejecución
 
 1. Asegurarse de que el backend esté corriendo en `http://localhost:3001`.
-2. Abrir la carpeta con **Live Server** en VS Code.
-3. Navegar a `pages/public/home.html`.
+2. Asegurarse de que el padron-service esté corriendo en `http://localhost:3002` (requerido para registro con validación de cédula).
+3. Abrir la carpeta con **Live Server** en VS Code.
+4. Navegar a `pages/public/home.html`.
 
 > ⚠️ El frontend usa ES Modules (`type="module"`), por lo que debe ejecutarse desde un servidor HTTP (Live Server), no abriendo el archivo directamente con `file://`.
 
@@ -82,11 +84,19 @@ ticoautos-frontend/
 
 ## 🔁 Flujo de autenticación
 
-1. El usuario se registra o inicia sesión.
-2. El backend retorna un JWT que se guarda en `localStorage`.
-3. `core/http.js` adjunta el token en cada petición protegida.
-4. `guards/requireAuth.js` verifica el token antes de cargar páginas privadas.
-5. Al cerrar sesión se limpia el token de `localStorage`.
+### Login tradicional
+1. El usuario se registra (con validación de cédula costarricense) o inicia sesión.
+2. Si el backend habilitó 2FA, se solicita el código SMS antes de emitir el JWT.
+3. El backend retorna un JWT que se guarda en `localStorage`.
+4. `core/http.js` adjunta el token en cada petición protegida.
+5. `guards/requireAuth.js` verifica el token antes de cargar páginas privadas.
+6. Al cerrar sesión se limpia el token de `localStorage`.
+
+### Google OAuth
+1. El usuario hace clic en "Iniciar sesión con Google".
+2. Google retorna un `id_token` que se envía a `POST /auth/google`.
+3. El backend valida el token y retorna un JWT de TicoAutos.
+4. El flujo continúa igual que el login tradicional desde el paso 3.
 
 ---
 
@@ -96,8 +106,8 @@ ticoautos-frontend/
 |--------|--------|-------------|
 | home.html | Público | Búsqueda y filtrado de vehículos con paginación |
 | vehicle.detail.html | Público | Detalle del vehículo, reserva y mensajes |
-| login.html | Público | Inicio de sesión |
-| register.html | Público | Registro de usuario |
+| login.html | Público | Inicio de sesión (tradicional o Google) |
+| register.html | Público | Registro de usuario con validación de cédula |
 | dashboard.html | Privado | Panel principal del usuario |
 | vehicle.my.html | Privado | Gestión de mis vehículos |
 | vehicle.create.html | Privado | Publicar nuevo vehículo |
